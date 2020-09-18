@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+header {
+    margin: 50px auto;
+}
+
+h1 {
+    text-align: center;
+}
+.player-info {
+    width: 30%;
+    margin: 30px auto ;
+}
+
+h2 {
+    display: inline-block;
+}
+
+.computer {
+    float: right;
+}
+
+.grid-container {
+    display: grid; 
+    justify-content: center;
+    height: 90%;
+    grid-template-columns: 150px 150px 150px;
+    grid-template-rows: 150px 150px 150px;
+    grid-gap: 5px 5px;
+}
+
+.grid-container > button {
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: lightgray;
+}
