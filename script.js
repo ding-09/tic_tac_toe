@@ -1,102 +1,109 @@
 const container = document.getElementById("game-board");
+const boardSpaces = document.getElementsByClassName("board-space");
 
-// module to initialize game board 
+// module to initialize game board display
 const displayGameBoard = (() => {
     for (i = 0; i < 3; i++) {
         let firstIdx = i.toString();
         for (j = 0; j < 3; j++) {
             let secondIdx = j;
             let index = firstIdx + secondIdx;
-            let button = document.createElement("button");
+            const button = document.createElement("button");
             button.classList.add("board-space");
             button.setAttribute("data-index", index);
             container.appendChild(button);
         }
     }
-
 })();
 
-const Board = () => {
+// module to initialize game board array
+const Board = (() => {
     let gameBoard = []; 
 
     // initiate gameBoard with indices matching button data index
-    const initBoard = () => {
-        let boardSpaces = document.getElementsByClassName("board-space");
-        for (i = 0; i < boardSpaces.length; i++) {
-            let index = boardSpaces[i].dataset.index;
-            gameBoard.push(index);
-        }
-    }
-    initBoard();
+    for (i = 0; i < boardSpaces.length; i++) {
+        let index = boardSpaces[i].dataset.index;
+        gameBoard.push(index);
+    };
 
-
-    const rowWin = () => {
-        if (gameBoard[0] && gameBoard[1] ) {
-
-        }
+    // function to remove selected array
+    const removeIndex = (index) => {
+        gameBoard.splice(index, 1);
     }
 
-
-
-    return {gameBoard};
-
-
-
-    // check if a player's desired move is legal before placing mark
-
-    // winning patterns:
-
-        // row: [00, 01, 02], [10, 11, 12], [20, 21, 22]
-
-        // col: [00, 10, 20], [01, 11, 21], [02, 12, 22]
-
-        // diagonal: [00, 11, 22], [02, 11, 20];
-
-    // tie if board is filled and there is no winning pattern 
-
-}
-
-let board = Board();
-console.log(board.gameBoard);
-
-
-
-
-
-
-// every player gets to make move on the board
+    return {gameBoard, removeIndex};
+})(); 
 
 const Player = (name, mark) => {
-    const getName = () => name;
-    const getMark = () => mark;
+    return {name, mark};
+}
+
+const CompPlayer = (name, mark) => {
+    // place mark on any current available index
+    const makeMove = () => {
+        const max = Board.gameBoard.length;
+        
+        // generate a random number between 0 and max array length
+        let randomIndex = Math.floor(Math.random() * max);
+
+        let compChoice = Board.gameBoard[randomIndex];
+        
+        // place marker
+        for (i = 0; i < boardSpaces.length; i++) {
+            let currentIndex = boardSpaces[i].dataset.index;
+            if (compChoice == currentIndex) {
+                boardSpaces[i].textContent = mark;
+                boardSpaces[i].style.cursor = "default";
+                boardSpaces[i].classList.add("selected");
+            }
+        }
+        // remove computer choice from gameboard array
+        Board.removeIndex(Board.gameBoard.indexOf(compChoice));
+
+    };
+    return {name, mark, makeMove};
+}
+
+const Game = () => {
+    // initiate players and board
+    let player = Player("Player", "X");
+    let computer = CompPlayer("Computer", "O");
+    let board = Board.gameBoard;
+
+    // human player makes first move 
+    let currentPlayer = player;
     
-    // make move 
-};
-    
+    container.addEventListener("click", (e) => {
+        // player makes move 
+        if (currentPlayer == player) {
+            let flag = true;
+            while (flag) {
+                if (e.target.textContent == "") {
+                    // if space is empty, place marker, adjust board, and switch turns
+                    let boardSpace = e.target;
+                    boardSpace.textContent = currentPlayer.mark;
+                    Board.removeIndex(board.indexOf(boardSpace.dataset.index));
+                    currentPlayer = computer;
+                    boardSpace.classList.add("selected");
+                    boardSpace.style.cursor = "default";
+                    flag = false;
+                } else {
+                    alert("This space is already taken!");
+                    return;
+                };
+            }
+        } 
 
-const Game = (player1, player2) => {
-    // new board
-    // player1
-    // player2
+        // computer makes move 
+        setTimeout(function() {
+            computer.makeMove();
+        }, 600);
+        currentPlayer = player;
 
-    // player1 make move 
+        // alternate until board is filled 
+            // check who won
+            // or if tie
+    });
+}
 
-    // place marker on display 
-
-    // check if won or tied 
-
-      // if won, display congratulatory message 
-
-      // if tied, display tie message 
-
-      // restart a new game in both scenarios 
-
-    // if no one wins or ties, 
-
-      // player2 make move 
-
-    // REPEAT until won or tied (will require loop)
-
-};
-
-
+let game = Game();
