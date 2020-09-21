@@ -186,8 +186,9 @@ const Game = (() => {
         if (!board.checkIfWon(player.mark) && !board.checkIfWon(computer.mark)) {
             if (board.checkIfTie()) {
                 setTimeout(function() {
-                    resetGame();
+                    displayModal("tie");
                 }, 1000);
+                return false;
             }
         }
     };
@@ -206,9 +207,14 @@ const resetGame = () => {
 const displayModal = (name) => {
     modalBg.style.display = "block";
     const winnerDisplay = document.getElementById("winner");
-    winnerDisplay.textContent = `${name} wins!`;
+    if (name == "tie") {
+        winnerDisplay.textContent = "It's a tie!";
+    } else {
+        winnerDisplay.textContent = `${name} wins!`;
+    }
     const restartBtn = document.getElementById("restart");
     restartBtn.addEventListener("click", () => {
         resetGame();
     })
 }
+
