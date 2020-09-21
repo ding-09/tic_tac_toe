@@ -1,5 +1,7 @@
 const container = document.getElementById("game-board");
 const boardSpaces = document.getElementsByClassName("board-space");
+const modalBg = document.querySelector(".modal-bg");
+
 
 const addCSS = (item) => {
     item.style.cursor = "default";
@@ -146,7 +148,7 @@ const CompPlayer = (name, mark) => {
 const Game = (() => {
     // initiate players and board
     let player = Player("Player", "X");
-    let computer = CompPlayer("Computer", "O");
+    let computer = CompPlayer("Bot", "O");
     let board = Board();
 
     // human player makes first move 
@@ -161,10 +163,9 @@ const Game = (() => {
                 player.makeMove(board, boardSpace);
                 if (board.checkIfWon(player.mark)) {
                     setTimeout(function() {
-                        alert(`${player.name} is the winner!`);
-                        resetGame();
-                    }, 400);
-                
+                        displayModal(player.name);
+                    }, 1000);
+                    return false;
                 };
                 currentPlayer = computer;
             }
@@ -173,9 +174,9 @@ const Game = (() => {
             computer.makeMove(board);
             if (board.checkIfWon(computer.mark)) {
                 setTimeout(function () {
-                    alert(`${computer.name} is the winner!`);
-                    resetGame();
-                }, 400);
+                    displayModal(computer.name);
+                }, 800);
+                return false;
             };   
         }, 800);
 
@@ -185,9 +186,8 @@ const Game = (() => {
         if (!board.checkIfWon(player.mark) && !board.checkIfWon(computer.mark)) {
             if (board.checkIfTie()) {
                 setTimeout(function() {
-                    alert("is tie");
                     resetGame();
-                }, 500);
+                }, 1000);
             }
         }
     };
@@ -201,4 +201,14 @@ const Game = (() => {
 
 const resetGame = () => {
     location.reload();
+}
+
+const displayModal = (name) => {
+    modalBg.style.display = "block";
+    const winnerDisplay = document.getElementById("winner");
+    winnerDisplay.textContent = `${name} wins!`;
+    const restartBtn = document.getElementById("restart");
+    restartBtn.addEventListener("click", () => {
+        resetGame();
+    })
 }
